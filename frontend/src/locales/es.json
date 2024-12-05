@@ -1,0 +1,64 @@
+{
+  "intro": {
+    "title": "Bienvenido a Nuestra Aplicación",
+    "description": "Por favor, haga clic en continuar para iniciar el proceso de registro."
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "back": "Atrás",
+    "submit": "Enviar",
+    "edit": "Editar",
+    "restart": "Comenzar de Nuevo",
+    "submitting": "Enviando..."
+  },
+  "steps": {
+    "step1Title": "Paso 1: Información Personal",
+    "step2Title": "Paso 2: Detalles de Contacto",
+    "step3Title": "Paso 3: Configuración de la Cuenta",
+    "step4Title": "Paso 4: Preferencias",
+    "reviewTitle": "Revisa Tu Información",
+    "successTitle": "Éxito"
+  },
+  "review": {
+    "title": "Revisa Tu Información"
+  },
+  "success": {
+    "title": "¡Envío Exitoso!",
+    "message": "Gracias por enviar el formulario. Hemos recibido su información."
+  },
+  "form": {
+    "firstName": "Nombre",
+    "firstNameHelper": "Ingrese su nombre de pila.",
+    "lastName": "Apellido",
+    "lastNameHelper": "Ingrese su apellido.",
+    "email": "Dirección de Correo",
+    "emailHelper": "Nunca compartiremos su correo electrónico.",
+    "password": "Contraseña",
+    "passwordHelper": "Elija una contraseña segura.",
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordHelper": "Reingrese su contraseña.",
+    "gender": "Género",
+    "genderHelper": "Seleccione su género.",
+    "genderMale": "Masculino",
+    "genderFemale": "Femenino",
+    "genderOther": "Otro",
+    "country": "País",
+    "countryHelper": "Seleccione su país de residencia.",
+    "countryUSA": "Estados Unidos",
+    "countryCanada": "Canadá",
+    "selectOption": "Seleccione una opción",
+    "customField": "Campo Personalizado",
+    "customFieldHelper": "Ingrese una opción válida."
+  },
+  "errors": {
+    "required": "Este campo es obligatorio.",
+    "invalidEmail": "Por favor, ingrese una dirección de correo válida.",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "invalidAnswer": "Por favor, ingrese una respuesta válida.",
+    "minLength": "La longitud mínima es de {{count}} caracteres.",
+    "maxLength": "La longitud máxima es de {{count}} caracteres.",
+    "pattern": "Formato inválido.",
+    "submissionFailed": "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde.",
+    "invalid": "Entrada inválida."
+  }
+}

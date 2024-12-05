@@ -1,0 +1,24 @@
+/* Import USWDS styles */
+@import '@trussworks/react-uswds/lib/uswds.css';
+@import '@trussworks/react-uswds/lib/index.css';
+
+/* Import Tailwind CSS*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Use Lora as base font */
+body, h4, h5, h6{
+  @apply text-charles_blue;
+}
+
+/* Use Montserrat as major header font */
+h1, h2, h3 {
+  @apply font-bold; 
+  @apply font-heading;
+}
+
+h1 {
+  @apply text-3xl
+}

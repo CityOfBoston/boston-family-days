@@ -1,0 +1,64 @@
+{
+  "intro": {
+    "title": "Welcome to Our Application",
+    "description": "Please click continue to start the registration process."
+  },
+  "buttons": {
+    "continue": "Continue",
+    "back": "Back",
+    "submit": "Submit",
+    "edit": "Edit",
+    "restart": "Start Over",
+    "submitting": "Submitting..."
+  },
+  "steps": {
+    "step1Title": "Step 1: Personal Information",
+    "step2Title": "Step 2: Contact Details",
+    "step3Title": "Step 3: Account Setup",
+    "step4Title": "Step 4: Preferences",
+    "reviewTitle": "Review Your Information",
+    "successTitle": "Success"
+  },
+  "review": {
+    "title": "Review Your Information"
+  },
+  "success": {
+    "title": "Submission Successful!",
+    "message": "Thank you for submitting the form. We have received your information."
+  },
+  "form": {
+    "firstName": "First Name",
+    "firstNameHelper": "Enter your given name.",
+    "lastName": "Last Name",
+    "lastNameHelper": "Enter your family name.",
+    "email": "Email Address",
+    "emailHelper": "We'll never share your email.",
+    "password": "Password",
+    "passwordHelper": "Choose a strong password.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordHelper": "Re-enter your password.",
+    "gender": "Gender",
+    "genderHelper": "Select your gender.",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "country": "Country",
+    "countryHelper": "Select your country of residence.",
+    "countryUSA": "United States",
+    "countryCanada": "Canada",
+    "selectOption": "Select an option",
+    "customField": "Custom Field",
+    "customFieldHelper": "Enter a valid option."
+  },
+  "errors": {
+    "required": "This field is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "passwordMismatch": "Passwords do not match.",
+    "invalidAnswer": "Please enter a valid answer.",
+    "minLength": "Minimum length is {{count}} characters.",
+    "maxLength": "Maximum length is {{count}} characters.",
+    "pattern": "Invalid format.",
+    "submissionFailed": "Failed to submit the form. Please try again later.",
+    "invalid": "Invalid input."
+  }
+}
