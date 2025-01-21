@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "../context/FormContext";
 import AddressStep from "./steps/AddressStep";
 import StudentStep from "./steps/StudentStep";
@@ -12,8 +12,19 @@ import DemographicStep from "./steps/DemographicStep";
 import OtherStep from "./steps/OtherStep";
 
 const Form: React.FC = () => {
-  const { state } = useFormContext();
+  const { state, submitForm } = useFormContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state.successData) {
+      navigate("/success");
+    }
+  }, [state.successData, navigate]);
+
+  const handleSubmit = async () => {
+    await submitForm(); // Trigger submission
+    navigate("/success"); // Navigate to success page
+  };
 
   const renderStep = () => {
     switch (STEPS[state.currentStepIndex]) {
@@ -30,14 +41,14 @@ const Form: React.FC = () => {
       case "otherStep":
         return <OtherStep />;
       case "reviewPage":
-        return <ReviewPage onSubmit={() => navigate("/success")} />;
+        return <ReviewPage onSubmit={handleSubmit} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-11 py-14 bg-white">
+    <div className="h-full mb-20">
       {state.currentStepIndex !== 0 && (
         <FormStepIndicator
           steps={STEP_NAMES}

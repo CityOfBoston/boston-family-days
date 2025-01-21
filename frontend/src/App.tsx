@@ -8,7 +8,7 @@ import SuccessPage from "./components/SuccessPage"
 const App: React.FC = () => {
   return (
     <FormProvider>
-        <div className="h-auto">
+        <div className="mx-auto h-auto w-full md:w-5/6 py-20">
           <Routes>
             <Route path="/" element={<IntroPage />} />
             <Route path="/forms" element={<MultiStepForm />} />

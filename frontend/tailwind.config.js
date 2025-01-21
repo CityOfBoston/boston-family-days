@@ -15,8 +15,8 @@ export default {
         optimistic_blue: "#1871BD",
         background_grey: "#F2F2F2",
         text_grey: "#757575",
-        error_red: "#b50909",
-        required_red: "#E41B3C"
+        error_red: "#AA241D",
+        required_red: "#AA241D"
       },
 
       fontWeight: {

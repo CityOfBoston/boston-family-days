@@ -2,8 +2,9 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Deny all direct access from the client side
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

@@ -1,13 +1,24 @@
 import React, { createContext, useReducer, useContext } from "react";
-import { STEPS } from "../utils/form";
-import { saveFormData } from "../utils/firebaseConfig"
+import { useNavigate } from "react-router-dom"; // Add React Router navigation
+import { STEPS, EMPTY_FORM_DATA } from "../utils/form";
+import { saveFormData } from "../utils/firebaseConfig";
 
 // Form state interface
 interface FormState {
   formData: Record<string, any>;
   currentStepIndex: number;
   successData: Record<string, any> | null;
-  error: string | null;
+  errorStore: string | null;
+}
+
+interface SaveFormResponse {
+  status: "success" | "error";
+  successData?: {
+    studentName: string;
+    id: string;
+    school: string;
+  };
+  message?: string;
 }
 
 // Actions for the reducer
@@ -22,10 +33,10 @@ type Action =
 
 // Initial state
 const initialState: FormState = {
-  formData: {},
+  formData: EMPTY_FORM_DATA,
   currentStepIndex: 0,
   successData: null,
-  error: null,
+  errorStore: null,
 };
 
 // Create context
@@ -84,13 +95,13 @@ const formReducer = (state: FormState, action: Action): FormState => {
       return {
         ...state,
         successData: action.data,
-        error: null,
+        errorStore: null
       };
     case "SET_ERROR":
       return {
         ...state,
-        error: action.error,
-        successData: null,
+        errorStore: action.error,
+        successData: null
       };
     case "RESET_FORM":
       return initialState;
@@ -104,6 +115,7 @@ export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const navigate = useNavigate(); // React Router's navigate function
 
   const goToNextStep = () => {
     dispatch({ type: "GO_TO_NEXT_STEP" });
@@ -120,9 +132,19 @@ export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
   const submitForm = async () => {
     try {
       const response = await saveFormData(state.formData);
-      dispatch({ type: "SET_SUCCESS_DATA", data: response.data as Record<string, any> });
+      const responseData = response.data as SaveFormResponse;
+
+      if (responseData.status === "success" && responseData.successData) {
+        dispatch({ type: "SET_SUCCESS_DATA", data: responseData.successData });
+        navigate("/success"); // Navigate to the success page
+      } else {
+        throw new Error(responseData.message || "Unexpected response format.");
+      }
     } catch (error: any) {
-      dispatch({ type: "SET_ERROR", error: error.message || "Submission failed" });
+      dispatch({
+        type: "SET_ERROR",
+        error: error.message || "Submission failed. Please try again.",
+      });
     }
   };
 

@@ -1,22 +1,24 @@
 /* Import USWDS styles */
 @import '@trussworks/react-uswds/lib/uswds.css';
-@import '@trussworks/react-uswds/lib/index.css';
 
 /* Import Tailwind CSS*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 /* Use Lora as base font */
-body, h4, h5, h6{
-  @apply text-charles_blue;
+body, p, h4, h5, h6, label, input, select, span, a {
+  @apply font-sans text-base !important;
+  color: theme('colors.charles_blue') !important;
+
 }
 
 /* Use Montserrat as major header font */
 h1, h2, h3 {
+  @apply uppercase;
   @apply font-bold; 
   @apply font-heading;
+  color: theme('colors.charles_blue') !important;
 }
 
 h1 {
