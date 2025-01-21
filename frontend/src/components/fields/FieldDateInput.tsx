@@ -37,7 +37,7 @@ const FieldDateInput: React.FC<FieldDateInputProps> = ({
   return (
     <div className="flex-column m-0">
       {hasError && !isErrorSuppressed && (
-        <p className="mt-1 text-error_red">{errorMessage}</p>
+        <p className="mt-1 !text-error_red">{errorMessage}</p>
       )}
       <Fieldset>
         <DateInputGroup>

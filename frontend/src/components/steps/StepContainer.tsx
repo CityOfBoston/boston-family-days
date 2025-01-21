@@ -8,7 +8,7 @@ import NavButton from "../common/NavButton";
 interface StepContainerProps {
   stepKey: keyof FormData;
   stepTitle?: string;
-  stepDescription?: string;
+  stepDescription?: React.ReactElement;
   children: React.ReactNode;
   errorMessage?: string
 }
@@ -24,6 +24,11 @@ const StepContainer: React.FC<StepContainerProps> = ({
   const fieldRefs = useRef<Record<string, React.RefObject<FieldRef>>>({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo(0,0);
+  }, []);
+
 
   // Register refs for fields
   useEffect(() => {
@@ -89,7 +94,7 @@ const StepContainer: React.FC<StepContainerProps> = ({
       <h1 className="uppercase">{stepTitle}</h1>
       {stepDescription && <span className="usa-hint font-sans">{stepDescription}</span>}
       {hasError && errorMessage && <Alert type="error" headingLevel="h4" noIcon>{errorMessage}</Alert>}
-      <p>Required fields are marked with an asterisk (<span className="text-required_red">*</span>).</p>
+      <p>Required fields are marked with an asterisk (<span className="!text-required_red">*</span>).</p>
       <div className="space-y-6">
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child) && child.props.id) {
@@ -112,28 +117,49 @@ const StepContainer: React.FC<StepContainerProps> = ({
             <NavButton
               onClick={handleNext}
               disabled={isButtonDisabled}
-              className="w-full m-0"
+              className="w-full"
             >
               Continue
             </NavButton>
           </div>
         ) : (
-          <ButtonGroup type="default" className="flex w-full justify-start">
-            <NavButton
-              onClick={() => dispatch({ type: "GO_TO_PREVIOUS_STEP" })}
-              className="w-40"
-              outline
+          <div className="w-full">
+            <div className="flex md:hidden">
+              <NavButton
+                onClick={() => dispatch({ type: "GO_TO_PREVIOUS_STEP" })}
+                className="w-1/2"
+                outline
+              >
+                Back
+              </NavButton>
+              <NavButton
+                onClick={handleNext}
+                disabled={isButtonDisabled}
+                className="w-1/2 m-0"
+              >
+                Continue
+              </NavButton>
+            </div>
+            <ButtonGroup
+              type="default"
+              className="hidden md:flex w-full justify-start"
             >
-              Back
-            </NavButton>
-            <NavButton
-              onClick={handleNext}
-              disabled={isButtonDisabled}
-              className="w-40"
-            >
-              Continue
-            </NavButton>
-          </ButtonGroup>
+              <NavButton
+                onClick={() => dispatch({ type: "GO_TO_PREVIOUS_STEP" })}
+                className="w-40"
+                outline
+              >
+                Back
+              </NavButton>
+              <NavButton
+                onClick={handleNext}
+                disabled={isButtonDisabled}
+                className="w-40"
+              >
+                Continue
+              </NavButton>
+            </ButtonGroup>
+          </div>
         )}
       </div>
     </div>

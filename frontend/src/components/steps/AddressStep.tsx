@@ -9,8 +9,9 @@ const AddressStep: React.FC = () => {
       stepKey="addressData"
       stepTitle={"What's Your Address?"}
       stepDescription={
-        "This program is only for children and families who live in the City of Boston. Please enter your home address where you and your family live."
-      }
+      <p>
+        This program is only for children and families who live in the City of Boston. Please enter your home address where you and your family live.
+      </p>}
       errorMessage="Sorry, the Boston Family Pass isn't available at your location"
     >
       <Field
@@ -22,7 +23,7 @@ const AddressStep: React.FC = () => {
       />
       <Field id="street2"
         helperText="Apt. # or unit #" type="text" header="Street Address line 2" />
-      <Field id="city" type="dropdown" options={NEIGHBORHOODS_IN_BOSTON} header="Neighborhood" required />
+      <Field id="neighborhood" type="dropdown" options={NEIGHBORHOODS_IN_BOSTON} header="Neighborhood" required />
       <Field
         id="zip"
         type="text"

@@ -5,7 +5,7 @@ interface FieldSelectProps {
   id: string;
   value: string;
   onChange: (value: string) => void;
-  options: { label: string; value: any }[];
+  options: Record<string, string>; // Updated type
   hasError: boolean;
   isErrorSuppressed?: boolean;
   errorMessage?: string;
@@ -23,7 +23,7 @@ const FieldSelect: React.FC<FieldSelectProps> = ({
   return (
     <div className="flex-column m-0">
       {hasError && !isErrorSuppressed && (
-        <p className="mt-1 text-error_red">{errorMessage}</p>
+        <p className="mt-1 !text-error_red">{errorMessage}</p>
       )}
       <Select
         id={id}
@@ -35,15 +35,12 @@ const FieldSelect: React.FC<FieldSelectProps> = ({
         <option value="" disabled hidden>
           - Select -
         </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+        {Object.entries(options).map(([key, label]) => (
+          <option key={key} value={key}>
+            {label}
           </option>
         ))}
       </Select>
-      {hasError && !isErrorSuppressed && (
-        <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
-      )}
     </div>
   );
 };

@@ -12,6 +12,7 @@ const institutions = [
   { name: "Boston Children’s Museum", url: "https://www.bostonchildrensmuseum.org/" },
   { name: "Franklin Park Zoo", url: "https://www.zoonewengland.org/franklin-park-zoo" },
   { name: "Institute of Contemporary Art", url: "https://www.icaboston.org/" },
+  { name: "New England Aquarium", url: "https://www.neaq.org/visit/"}
 ];
 
 const IntroPage: React.FC = () => {
@@ -22,34 +23,41 @@ const IntroPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto text-left">
-      <h1 className="my-8 uppercase">
+    <div className="h-full space-y-8">
+      <h1 className="uppercase">
         Sign up for Boston Family Days!
       </h1>
-      <p className="mt-8">
+      <p>
         Mayor Michelle Wu invites you and your family to take part in Boston Family Days! 
         This program is open to all children who live in Boston and are enrolled in school 
         between kindergarten through Grade 12.
       </p>
-      <p className="mt-8">
+      <p>
         Once you have completed this enrollment for your child, you will receive your 
         Boston Family Days pass. This pass can be shown for free admission for your child 
-        and up to two guests at the following institutions:
+        and up to two guests at the following institutions <span className="font-bold">on the first and second Sunday of 
+        each month through December 2026</span> at the following institutions:
       </p>
       <ul className="mt-8 list-disc list-inside space-y-1">
         {institutions.map(({ name, url }) => (
           <li key={name} className="m-0">
-            <Link variant="external" href={url} target="_blank" rel="noopener noreferrer">
+            <Link variant="external" href={url} target="_blank" rel="noopener noreferrer" className="!text-optimistic_blue">
               {name}
             </Link>
           </li>
         ))}
       </ul>
-      <p className="my-6">
+      <p>
         You will also receive bi-weekly emails about the program with special 
         opportunities and reminders.
       </p>
-      <div className="my-8">
+      <p>
+        <span className="!text-required_red font-bold">Note for BPS Families:</span> If your child 
+        is enrolled in Boston Public Schools or Boston Pre-K, they are automatically signed 
+        up for this program. You will continue to receive your Boston Family Days pass 
+        directly via BPS. Please ensure that your email address is updated in the BPS system.
+      </p>
+      <div className="mb-8">
         <NavButton
           onClick={handleRegisterClick}
           className="w-full uppercase font-heading">

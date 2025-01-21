@@ -30,11 +30,11 @@ const FormStepIndicator: React.FC<FormStepIndicatorProps> = ({
             status = "current";
           }
 
-          return <StepIndicatorStep key={index} label={step} status={status} />;
+          return <StepIndicatorStep key={`step-${index}`} label={step} status={status} />;
         })}
       </StepIndicator>
-      <div className="border-t border-gray-300 py-7">
-        <p className="italic font-normal text-optimistic_blue">
+      <div className="md:border-t md:border-gray-400 pb-3 md:py-7">
+        <p className="italic font-normal !text-optimistic_blue">
           Step {currentStepIndex} of {steps.length - 1}
         </p>
       </div>

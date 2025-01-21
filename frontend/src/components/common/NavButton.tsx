@@ -21,7 +21,7 @@ const NavButton: React.FC<ButtonProps> = ({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={className}
+      className={`${className} uppercase font-heading`}
       {...(outline ? { outline: true } : {})}
     >
       {children}

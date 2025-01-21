@@ -20,10 +20,14 @@ export interface FieldProps {
   validate?: (value: any) => boolean;
   isErrorSuppressed?: boolean
   errorMessage?: string;
-  options?: { label: string; value: any }[]; // For inputs, selects, radio buttons, and checkboxes
+  options?: Record<string, string>
   value?: any;
   onValueChange?: (id: string, value: any) => void;
   onInputChange?: (value: string) => void;
+  otherText?: string;
+  otherSpecifyText?: string;
+  noneOfTheAboveText?: string;
+  preferNotToSayText?: string;
 }
 
 export interface FieldRef {
@@ -44,8 +48,12 @@ const Field = forwardRef<FieldRef, FieldProps>(
       errorMessage,
       options,
       value,
+      otherText,
+      otherSpecifyText,
+      noneOfTheAboveText,
+      preferNotToSayText,
       onValueChange,
-      onInputChange
+      onInputChange,
     },
     ref
   ) => {
@@ -90,6 +98,7 @@ const Field = forwardRef<FieldRef, FieldProps>(
             isErrorSuppressed={isErrorSuppressed}
             hasError={hasError}
             errorMessage={errorMessage}
+            preferNotToSayText={preferNotToSayText}
           />
         );
         break;
@@ -99,7 +108,7 @@ const Field = forwardRef<FieldRef, FieldProps>(
             id={id}
             value={fieldValue}
             onChange={handleChange}
-            options={options || []}
+            options={options || {}}
             hasError={hasError}
             isErrorSuppressed={isErrorSuppressed}
             errorMessage={errorMessage}
@@ -112,10 +121,11 @@ const Field = forwardRef<FieldRef, FieldProps>(
             id={id}
             value={fieldValue}
             onChange={handleChange}
-            options={options || []}
+            options={options || {}}
             hasError={hasError}
             isErrorSuppressed={isErrorSuppressed}
             errorMessage={errorMessage}
+            preferNotToSayText={preferNotToSayText}
           />
         );
         break;
@@ -123,12 +133,16 @@ const Field = forwardRef<FieldRef, FieldProps>(
         InputComponent = (
           <CheckboxGroup
             id={id}
-            value={fieldValue || []}
+            value={fieldValue || {}}
             onChange={handleChange}
-            options={options || []}
+            options={options || {}}
             hasError={hasError}
             isErrorSuppressed={isErrorSuppressed}
             errorMessage={errorMessage}
+            otherText={otherText}
+            otherSpecifyText={otherSpecifyText}
+            preferNotToSayText={preferNotToSayText}
+            noneOfTheAboveText={noneOfTheAboveText}
           />
         );
         break;
@@ -150,7 +164,9 @@ const Field = forwardRef<FieldRef, FieldProps>(
             id={id}
             value={fieldValue}
             onChange={handleChange}
-            options={options || []}
+            options={options || {}}
+            otherText={otherText}
+            otherSpecifyText={otherSpecifyText}
             isErrorSuppressed={isErrorSuppressed}
             hasError={hasError}
             errorMessage={errorMessage}
@@ -164,7 +180,7 @@ const Field = forwardRef<FieldRef, FieldProps>(
     return (
       <div className={`mb-6 ${hasError && !isErrorSuppressed ? "pl-4 border-l-4 border-error_red" : ""}`}>
         <label className="font-bold" htmlFor={id}>
-          {header} {required ? <span className="text-required_red">*</span> : <span>(optional)</span>}
+          {header} {required ? <span className="!text-required_red">*</span> : <span>(optional)</span>}
         </label>
         {helperText && <h5 className="text-text_grey">{helperText}</h5>}
         {InputComponent}
