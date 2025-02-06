@@ -1,50 +1,72 @@
-# React + TypeScript + Vite
+# Boston Family Days Frontend Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for Boston Family Days, hosted via Firebase Hosting and integrated with callable Cloud Functions. The application uses Shadow DOM to ensure that when embedded in Boston.gov Drupal pages, the global styles from Drupal do not interfere with the unique styles of this application.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Node Version Manager (NVM):** Ensure you have NVM installed to manage Node.js versions.
+- **Node.js:** Use Node.js version 18. You can set this up using NVM:
+  ```bash
+  nvm install 18
+  nvm use 18
+  ```
+- **Yarn:** This project uses Yarn as the package manager. Install it globally if you haven't:
+  ```bash
+  npm install --global yarn
+  ```
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Install Dependencies:**
+   ```bash
+   yarn install
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. **Environment Variables:**
+   - Copy `.env.example` to `.env` and fill in the necessary Firebase configuration values.
+   - **Important:** After any changes to environment variables, you must rebuild the project before deployment:
+     ```bash
+     yarn build
+     ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+3. **Development Server:**
+   - Start the development server:
+     ```bash
+     yarn dev
+     ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Deployment
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- Deploy the application to Firebase Hosting:
+  ```bash
+  firebase deploy --only hosting
+  ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Tailwind CSS Setup
+
+This project uses Tailwind CSS for styling. The setup includes:
+
+- **Base Styles:** Tailwind's base styles are imported to provide a solid foundation.
+- **Components and Utilities:** Tailwind's component and utility classes are used extensively throughout the application.
+- **Custom Fonts:** The application uses Lora and Montserrat fonts, applied using Tailwind's `@apply` directive.
+
+## File Structure
+
+- **`frontend/.env.example`:** Template for environment variables.
+- **`frontend/index.html`:** The main HTML file, setting up the application entry point.
+- **`frontend/src/App.tsx`:** The main React component, defining the application's routes and structure.
+- **`frontend/src/main.tsx`:** The entry point for the React application, setting up the Shadow DOM and rendering the app.
+- **`frontend/src/index.css`:** The main CSS file, importing USWDS styles and Tailwind CSS, and applying custom styles.
+
+## Notes
+
+- The application uses Shadow DOM to encapsulate styles, preventing style conflicts when embedded in other pages.
+- Ensure all environment variables are correctly set and the project is rebuilt before deploying to avoid runtime errors.
+
+## Contributing
+
+Feel free to open issues or submit pull requests for improvements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License.

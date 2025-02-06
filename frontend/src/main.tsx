@@ -11,5 +11,5 @@ createRoot(document.getElementById('boston-family-days')!.attachShadow({ mode: "
     <HashRouter>
       <App />
     </HashRouter>
-  </StrictMode>,
+  </StrictMode>
 )
