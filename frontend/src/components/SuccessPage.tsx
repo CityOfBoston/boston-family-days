@@ -100,7 +100,7 @@ const SuccessPage: React.FC = () => {
             </div>
             <div>
               <p className="font-semibold">Student pass ID</p>
-              <p>{successData.id}</p>
+              <p>{successData.passId}</p>
             </div>
             <div>
               <p className="font-semibold">School name</p>

@@ -15,7 +15,7 @@ interface SaveFormResponse {
   status: "success" | "error";
   successData?: {
     studentName: string;
-    id: string;
+    passId: string;
     school: string;
   };
   message?: string;
@@ -132,6 +132,7 @@ export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
   const submitForm = async () => {
     try {
       const response = await saveFormData(state.formData);
+      console.log("Response:", response);
       const responseData = response.data as SaveFormResponse;
 
       if (responseData.status === "success" && responseData.successData) {

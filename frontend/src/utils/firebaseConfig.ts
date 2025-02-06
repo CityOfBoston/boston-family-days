@@ -27,3 +27,8 @@ export const saveFormData = async (data: any) => {
   const callable = httpsCallable(functions, 'saveFormData');
   return callable(data);
 };
+
+export const saveFileData = async (data: any) => {
+  const callable = httpsCallable(functions, 'saveFileData');
+  return callable(data);
+};

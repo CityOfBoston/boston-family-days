@@ -28,3 +28,7 @@ curl -X POST https://us-central1-family-cultural-pass--dev.cloudfunctions.net/cl
 curl -X GET \
   -H "x-api-key: 6691f02d-3376-415d-b1d8-74d6941bcfcd" \
   "https://us-central1-family-cultural-pass--dev.cloudfunctions.net/getRegistrationData?limit=10"
+
+curl -X GET \
+  -H "x-api-key: aec8d1f3-d1c9-4ffe-9bc6-51939d971e9b" \
+  "https://us-central1-boston-family-days---prod.cloudfunctions.net/getRegistrationData"

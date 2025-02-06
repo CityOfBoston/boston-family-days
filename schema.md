@@ -3,9 +3,8 @@ We need to integrate registration data collected for the Boston Family Days prog
 Student data is stored as registration data and demographic data due to data security and privacy compliance reasons.
 
 The registrationData data includes the following fields:
-- id: a unique, non-optional five-character string consisting of uppercase letters and numbers (36 possibilities for each digit), for example, A1B2C.
+- passId: a unique, non-optional five-character string consisting of uppercase letters and numbers (36 possibilities for each digit), for example, A1B2C.
 - email: the parent’s contact email and: optional.
-- studentIndex represents the position of the student in the registration order and: numeric.
 - school: the name of the student’s school and: non-optional.
 - firstName: the student’s first name and: non-optional.
 - middleName: the student’s middle name and: optional.
@@ -18,7 +17,7 @@ The registrationData data includes the following fields:
 - status: derived from the studentIndex and indicates the registration status. It: non-optional.
 
 The demographicData data includes the following fields:
-- id: see above.
+- passId: see above.
 - street1: the primary address line and: non-optional.
 - street2: the secondary address line and: optional.
 - neighborhood: the neighborhood of residence within Boston and: non-optional.

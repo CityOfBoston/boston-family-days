@@ -3,7 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { FormProvider } from "./context/FormContext";
 import MultiStepForm from "./components/MultiStepForm";
 import IntroPage from "./components/IntroPage";
-import SuccessPage from "./components/SuccessPage"
+import SuccessPage from "./components/SuccessPage";
+import UploadPage from "./components/UploadPage";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
             <Route path="/" element={<IntroPage />} />
             <Route path="/forms" element={<MultiStepForm />} />
             <Route path="/success" element={<SuccessPage />} />
+            <Route path="/upload" element={<UploadPage />} />
           </Routes>
         </div>
     </FormProvider>

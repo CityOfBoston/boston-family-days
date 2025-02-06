@@ -2,22 +2,25 @@
  * @file Initialize Firebase Admin SDK.
  */
 import * as admin from "firebase-admin";
+
 admin.initializeApp();
 
 import {saveFormData} from "./callable/SaveFormData";
+import {saveFileData} from "./callable/SaveFileData";
 import {webhookHandler} from "./https/SubscriptionStatusHandler";
-import {cleanUpAndTransformData} from "./https/LanguageCleanup";
+import {cleanUpAndTransform} from "./https/CleanUpAndTransform";
 import {batchUpload} from "./https/BatchUpload";
-import {handleDuplicates} from "./https/RemoveDuplicates";
 import {getRegistrationData} from "./https/GetRegistrationData";
 import {getDemographicData} from "./https/GetDemographicData";
+import {syncUpaknee} from "./https/SyncUpaknee";
 
 export {
   saveFormData,
+  saveFileData,
   webhookHandler,
-  cleanUpAndTransformData,
+  cleanUpAndTransform,
   batchUpload,
-  handleDuplicates,
   getRegistrationData,
   getDemographicData,
+  syncUpaknee,
 };
