@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions";
 import {readBatchUploadFiles} from "../lib/storageClient";
 import {addStudentsAndSyncSubscribers,
   createHttpTrigger} from "../lib/functionsClient";
@@ -14,32 +13,40 @@ export const batchUpload = createHttpTrigger(
   "private",
   async (req, res) => {
     const folderName = req.query.folderName as string;
+    console.log(`Batch upload request received for folder: ${folderName}`);
 
     if (!folderName) {
-      functions.logger.error("Missing folder name in request.");
+      console.error("Missing folder name in request.");
       res.status(400).send({error: "Missing folder name in request."});
       return;
     }
 
     try {
-    // Read and parse CSV files from the specified folder in the cloud bucket
+      // Read and parse CSV files from the
+      // specified folder in the cloud bucket
       const {records: studentRecords, errors} =
       await readBatchUploadFiles(folderName);
 
-      if (errors.length > 0) {
-        functions.logger.warn(
-          `Encountered errors while reading files: ${errors.join(", ")}`);
+      if (!studentRecords || studentRecords.length === 0) {
+        console.error(`No student records found in folder: ${folderName}`);
+        res.status(404).send({error: "Folder not found or empty."});
+        return;
       }
 
-      functions.logger.info(`Parsed ${studentRecords.length}
+      if (errors.length > 0) {
+        console.warn(`Encountered errors 
+          while reading files: ${errors.join(", ")}`);
+      }
+
+      console.log(`Parsed ${studentRecords.length}
       student records from CSV files.`);
 
       await addStudentsAndSyncSubscribers(studentRecords);
 
-      functions.logger.info("Batch upload completed successfully.");
+      console.log("Batch upload completed successfully.");
       res.status(200).send({status: "success"});
     } catch (error) {
-      functions.logger.error("Error processing batch upload:", error);
+      console.error("Error processing batch upload:", error);
       res.status(500).send({error: "Internal Server Error"});
     }
   }, true);

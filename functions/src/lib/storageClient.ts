@@ -17,14 +17,18 @@ interface FileData {
  * - A promise that resolves to an object containing the error if any.
  */
 export const uploadFiles = async (files: FileData[], folderPath: string) => {
+  console.log(`Starting upload of ${files.length} 
+    files to folder: ${folderPath}`);
   try {
     await Promise.all(
       files.map(async (file: FileData) => {
+        console.log(`Uploading file: ${file.name}`);
         const fileRef = bucket.file(
           `${folderPath}${file.name}`);
         await fileRef.save(file.data, {
           contentType: "text/csv",
         });
+        console.log(`Successfully uploaded file: ${file.name}`);
       })
     );
   } catch (error) {
@@ -32,6 +36,7 @@ export const uploadFiles = async (files: FileData[], folderPath: string) => {
     return {error: `Error uploading files: ${error}`};
   }
 
+  console.log("All files uploaded successfully.");
   return {success: true};
 };
 
@@ -60,11 +65,14 @@ export const uploadFiles = async (files: FileData[], folderPath: string) => {
 */
 export const readBatchUploadFiles = async (folderName: string):
 Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
+  console.log(`Reading batch upload files from folder: ${folderName}`);
   const [files] = await bucket.getFiles({prefix: folderName});
+  console.log(`Found ${files.length} files in folder: ${folderName}`);
   const records: StudentRegistrationData[] = [];
   const errors: string[] = [];
 
   for (const file of files) {
+    console.log(`Processing file: ${file.name}`);
     const fileBuffer = await file.download();
     const fileContent = fileBuffer[0].toString("utf-8");
 
@@ -72,10 +80,15 @@ Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
     parseBatchUploadCSV(fileContent, file.name);
     records.push(...fileRecords);
     errors.push(...fileErrors);
+    console.log(`Processed file: ${file.name}, 
+      Records: ${fileRecords.length}, 
+      Errors: ${fileErrors.length}`);
   }
 
   if (errors.length > 0) {
     console.error("Errors found during file processing:", errors);
+  } else {
+    console.log("All files processed successfully with no errors.");
   }
 
   return {records, errors};
@@ -91,13 +104,21 @@ Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
  */
 export const readUpakneeCSV = async (folderName: string):
 Promise<string[]> => {
+  console.log(`Reading Upaknee CSV files from folder: ${folderName}`);
   const [files] = await bucket.getFiles({prefix: folderName});
+  console.log(`Found ${files.length} files in folder: ${folderName}`);
   const emails: string[] = [];
 
   for (const file of files) {
+    console.log(`Processing file: ${file.name}`);
     const fileBuffer = await file.download();
     const fileContent = fileBuffer[0].toString("utf-8");
-    emails.push(...parseUpakneeCSV(fileContent));
+    const parsedEmails = parseUpakneeCSV(fileContent);
+    emails.push(...parsedEmails);
+    console.log(`Extracted ${parsedEmails.length} 
+      emails from file: ${file.name}`);
   }
+
+  console.log(`Total emails extracted: ${emails.length}`);
   return emails;
 };

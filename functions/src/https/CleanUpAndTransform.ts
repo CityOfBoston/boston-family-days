@@ -1,7 +1,11 @@
 import {createHttpTrigger} from "../lib/functionsClient";
 import {registrationDataRef, demographicDataRef} from "../lib/firestoreClient";
-import {nanoid} from "nanoid";
 
+/* This function is used for temporary batch clean ups
+ * for the registration and demographic data collections in Firestore
+ * It is a more secure and maintainable alternative to setting up firebase sdk
+ * The specific logic and use case varies according to the needs at each stage
+*/
 export const cleanUpAndTransform = createHttpTrigger(
   "private",
   async (req, res) => {
@@ -11,45 +15,35 @@ export const cleanUpAndTransform = createHttpTrigger(
       const registrationData = await registrationDataRef.get();
       const demographicData = await demographicDataRef.get();
 
-      for (const doc of registrationData.docs) {
-        const id = doc.id;
-        if (id.length !== 21) {
-          const newId = nanoid();
-          const data = doc.data();
-          const createdAt = data.createdAt;
-          if (createdAt !== undefined) {
-            await registrationDataRef.doc(newId).set({
-              ...data,
-              createdAt: createdAt,
-            });
-          } else {
-            console.log(`Document with ID ${id} has no createdAt timestamp.`);
-            await registrationDataRef.doc(newId).set(
-              {...data, createdAt: new Date()});
-          }
-          await registrationDataRef.doc(id).delete();
-          console.log(`Document with ID ${id} updated to new ID ${newId}.`);
-        }
-      }
+      const registrationDataMap = new Map();
+      registrationData.forEach((doc) => {
+        const data = doc.data();
+        registrationDataMap.set(data.passId, data.createdAt);
+      });
 
-      for (const doc of demographicData.docs) {
-        const id = doc.id;
-        if (id.length !== 21) {
-          const newId = nanoid();
-          const data = doc.data();
-          const createdAt = data.createdAt;
-          if (createdAt !== undefined) {
-            await demographicDataRef.doc(newId).set({
-              ...data,
-              createdAt: createdAt,
-            });
+      console.log(`Registration Map: ${JSON.stringify(registrationDataMap)}`);
+
+      const batch = demographicDataRef.firestore.batch();
+
+      demographicData.forEach((doc) => {
+        const data = doc.data();
+        console.log(`Demographic Data: ${JSON.stringify(data)}`);
+        if (!data.createdAt) {
+          console.log("Found a document without a createdAt field.");
+          console.log(`Pass ID: ${data.passId}`);
+          const createdAt = registrationDataMap.get(data.passId);
+          if (createdAt) {
+            console.log("Found a createdAt field.");
+            console.log(`Created At: ${createdAt}`);
+            const docRef = demographicDataRef.doc(doc.id);
+            batch.update(docRef, {createdAt});
           } else {
-            await demographicDataRef.doc(newId).set(data);
+            console.log("No createdAt field found.");
           }
-          await demographicDataRef.doc(id).delete();
-          console.log(`Document with ID ${id} updated to new ID ${newId}.`);
         }
-      }
+      });
+
+      await batch.commit();
 
       res.status(200).send("Documents have been successfully updated.");
       console.log("CleanUpAndTransform function completed successfully.");
