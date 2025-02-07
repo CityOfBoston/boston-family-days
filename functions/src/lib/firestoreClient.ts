@@ -180,6 +180,7 @@ export const addStudentToFirebase = async (
 
   const demographicEntry = {
     passId: passId,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
     ...studentRegistrationData.street1 &&
     {street1: studentRegistrationData.street1},
     ...studentRegistrationData.street2 &&

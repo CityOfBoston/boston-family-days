@@ -1,8 +1,9 @@
 import * as functions from "firebase-functions";
 import {syncSubscribers} from "../lib/firestoreClient";
+import {createHttpTrigger} from "../lib/functionsClient";
 
-export const syncUpaknee = functions.https.onRequest(
-  {timeoutSeconds: 1800},
+export const syncUpaknee = createHttpTrigger(
+  "private",
   async (req, res) => {
     try {
       await syncSubscribers();
@@ -12,5 +13,4 @@ export const syncUpaknee = functions.https.onRequest(
       functions.logger.error("Error syncing with Upaknee:", error);
       res.status(500).send({error: "Internal Server Error"});
     }
-  }
-);
+  }, true);

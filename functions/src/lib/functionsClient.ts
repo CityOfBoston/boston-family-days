@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions/v2";
 import {addStudentToFirebase,
   updateProfileId,
-  syncSubscribers} from "./firestoreClient";
+  // syncSubscribers
+} from "./firestoreClient";
 import {StudentRegistrationData, StudentSubscriberData} from "./types";
 import {addSingleSubscriber} from "./upakneeClient";
 import {Request, Response} from "express";
@@ -27,7 +28,7 @@ export function createHttpTrigger(
   hasBatchOperation = false) {
   return functions.https.onRequest(
     hasBatchOperation ?
-      {timeoutSeconds: 1800} :
+      {timeoutSeconds: 3600} :
       {timeoutSeconds: 300},
     async (req, res) => {
       try {
@@ -167,7 +168,7 @@ export const addStudentsAndSyncSubscribers = async (
     await addStudentAndUpdateSubscriber(studentRegistrationData);
   }
   // Sync subscribers with Upaknee
-  await syncSubscribers();
+  // await syncSubscribers();
 };
 
 /**
