@@ -1,7 +1,7 @@
 username: 'Digital Team Notices'
 icon_url: https://boston.gov/digitalteamicon.png
 
-pretext: A Boton-Family-Days deployment has been completed and release notes have been published.
+pretext: A Boston-Family-Days deployment has been completed and release notes have been published.
 title: <{{payload.release.html_url}}|Code Release>
 title_link: {{payload.release.html_url}}
 
