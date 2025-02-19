@@ -1,7 +1,8 @@
 import * as admin from "firebase-admin";
 import {Request, Response} from "express";
 import {validateLimit, createHttpTrigger} from "../lib/functionsClient";
-import {constructQueryWithDateFilters,
+import {
+  constructQueryWithDateFilters,
   handlePagination,
   processFirestoreDocuments,
 } from "../lib/firestoreClient";
@@ -28,7 +29,8 @@ export const getDemographicData = createHttpTrigger(
       );
 
       const {query: paginatedQuery, nextPageToken} =
-      await handlePagination(query, limit, pageToken as string);
+      await handlePagination(query, limit, pageToken as string,
+        "demographicData");
 
       const snapshot = await paginatedQuery.get();
       const bookings = processFirestoreDocuments(snapshot, limit);

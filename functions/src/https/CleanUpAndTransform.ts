@@ -1,5 +1,7 @@
 import {createHttpTrigger} from "../lib/functionsClient";
-import {registrationDataRef, demographicDataRef} from "../lib/firestoreClient";
+import {registrationDataRef,
+  demographicDataRef,
+} from "../lib/firestoreClient";
 
 /* This function is used for temporary batch clean ups
  * for the registration and demographic data collections in Firestore
@@ -15,38 +17,41 @@ export const cleanUpAndTransform = createHttpTrigger(
       const registrationData = await registrationDataRef.get();
       const demographicData = await demographicDataRef.get();
 
+      // TODO: Go through demographicData and check if the createdAt field
+      // is present. If not, lookup the passId in registrationData and use
+      // the createdAt field from registrationData. Update the demographicData
+      // with the new createdAt field. If the lookup fails, log the entry with
+      // a message then remove the entry from demographicData.
+
       const registrationDataMap = new Map();
       registrationData.forEach((doc) => {
-        const data = doc.data();
-        registrationDataMap.set(data.passId, data.createdAt);
+        registrationDataMap.set(doc.id, doc.data().createdAt);
       });
 
-      console.log(`Registration Map: ${JSON.stringify(registrationDataMap)}`);
-
       const batch = demographicDataRef.firestore.batch();
+      let removalCount = 0;
 
       demographicData.forEach((doc) => {
         const data = doc.data();
-        console.log(`Demographic Data: ${JSON.stringify(data)}`);
         if (!data.createdAt) {
-          console.log("Found a document without a createdAt field.");
-          console.log(`Pass ID: ${data.passId}`);
           const createdAt = registrationDataMap.get(data.passId);
           if (createdAt) {
-            console.log("Found a createdAt field.");
-            console.log(`Created At: ${createdAt}`);
-            const docRef = demographicDataRef.doc(doc.id);
-            batch.update(docRef, {createdAt});
+            // Update the document with the createdAt field
+            batch.update(doc.ref, {createdAt});
           } else {
-            console.log("No createdAt field found.");
+            // Log and remove the document if createdAt cannot be found
+            console.log(`Removing document: ${doc} due to missing createdAt`);
+            batch.delete(doc.ref);
+            removalCount++;
           }
         }
       });
 
       await batch.commit();
-
-      res.status(200).send("Documents have been successfully updated.");
-      console.log("CleanUpAndTransform function completed successfully.");
+      console.log(`CleanUpAndTransform function completed 
+        successfully. Estimated removals: ${removalCount}`);
+      res.status(200).send(`Data cleaned and transformed 
+        successfully. Estimated removals: ${removalCount}`);
     } catch (error) {
       console.error("Error in CleanUpAndTransform function:", error);
       res.status(500).send("An error occurred during the update process.");

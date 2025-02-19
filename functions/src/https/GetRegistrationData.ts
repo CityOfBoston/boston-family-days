@@ -29,14 +29,15 @@ export const getRegistrationData = createHttpTrigger(
       );
 
       const {query: paginatedQuery, nextPageToken} =
-        await handlePagination(query, limit, pageToken as string);
+        await handlePagination(query, limit, pageToken as string,
+          "registrationData");
 
       const snapshot = await paginatedQuery.get();
       const bookings = processFirestoreDocuments(snapshot, limit);
 
       res.json({bookings, nextPageToken});
     } catch (error) {
-      console.error("Error fetching demographic data:", error);
+      console.error("Error fetching registration data:", error);
       res.status(500).json({error: `Internal Server Error: ${error}`});
     }
   }

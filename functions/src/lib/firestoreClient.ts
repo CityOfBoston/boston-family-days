@@ -390,16 +390,19 @@ export const constructQueryWithDateFilters = (
  * - The maximum number of documents to return.
  * @param {string | undefined} pageToken
  * - The page token to use for pagination.
+ * @param {string} collectionName
+ * - The name of the collection to paginate.
  */
 export const handlePagination = async (
   query: Query,
   limit: number,
-  pageToken?: string
+  pageToken?: string,
+  collectionName = "registrationData"
 ): Promise<{ query: Query,
   hasMore: boolean, nextPageToken: string | null }> => {
   if (pageToken) {
     const lastVisible =
-    await admin.firestore().doc(`registrationData/${pageToken}`).get();
+    await admin.firestore().doc(`${collectionName}/${pageToken}`).get();
     query = query.startAfter(lastVisible);
   }
 
