@@ -16,7 +16,8 @@ interface FileData {
  * @param {string} folderPath
  * - A promise that resolves to an object containing the error if any.
  */
-export const uploadFiles = async (files: FileData[], folderPath: string) => {
+export const uploadFiles = async (
+  files: FileData[], folderPath: string) => {
   console.log(`Starting upload of ${files.length} 
     files to folder: ${folderPath}`);
   try {
@@ -44,17 +45,17 @@ export const uploadFiles = async (files: FileData[], folderPath: string) => {
  * given a folder name, checks for completeness on required
  * fields, appends them together and returns a list of records.
  * The csv files are expected to have the following columns:
- * School StudentNo FirstName LastName ContactName ContactEmail,
+ * School FirstName LastName ContactName ContactEmail,
  * corresponding to the following parsed fields stored in firebase:
- * school, studentId, firstName, lastName,
+ * school, firstName, lastName,
  * parentFirstName & parentLastName, email
  * If any csv file is missing any of these required fields,
  * the function will return an error.
  * They may also have the following optional columns:
- * ContactPhone DateOfBirth Grade ZipCode IsEnglishLearner
+ * StudentNo ContactPhone DateOfBirth Grade ZipCode IsEnglishLearner
  * HasIEP Neighborhood which
  * correspond to the following parsed fields stored in firebase:
- * phoneNumber, dob, grade, zip, englishLearner, iep, neighborhood
+ * studentId, phoneNumber, dob, grade, zip, englishLearner, iep, neighborhood
  * If any fields outside of these are present, they will be ignored.
  * The function will return a list of records with the
  * following fields:
@@ -66,32 +67,74 @@ export const uploadFiles = async (files: FileData[], folderPath: string) => {
 export const readBatchUploadFiles = async (folderName: string):
 Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
   console.log(`Reading batch upload files from folder: ${folderName}`);
-  const [files] = await bucket.getFiles({prefix: folderName});
-  console.log(`Found ${files.length} files in folder: ${folderName}`);
   const records: StudentRegistrationData[] = [];
   const errors: string[] = [];
 
-  for (const file of files) {
-    console.log(`Processing file: ${file.name}`);
-    const fileBuffer = await file.download();
-    const fileContent = fileBuffer[0].toString("utf-8");
+  try {
+    const [files] = await bucket.getFiles({prefix: folderName});
+    console.log(`Found ${files.length} files in folder: ${folderName}`);
 
-    const {records: fileRecords, errors: fileErrors} =
-    parseBatchUploadCSV(fileContent, file.name);
-    records.push(...fileRecords);
-    errors.push(...fileErrors);
-    console.log(`Processed file: ${file.name}, 
-      Records: ${fileRecords.length}, 
-      Errors: ${fileErrors.length}`);
+    if (files.length === 0) {
+      errors.push(`No files found in folder: ${folderName}`);
+      return {records, errors};
+    }
+
+    // Filter for only CSV files
+    const csvFiles = files.filter((file) => file.name.
+      toLowerCase().endsWith(".csv"));
+
+    if (csvFiles.length === 0) {
+      errors.push(`No CSV files found in folder: ${folderName}`);
+      return {records, errors};
+    }
+
+    console.log(`Found ${csvFiles.length} CSV files in folder: ${folderName}`);
+
+    for (const file of csvFiles) {
+      console.log(`Processing file: ${file.name}`);
+      try {
+        const fileBuffer = await file.download();
+        const fileContent = fileBuffer[0].toString("utf-8");
+
+        const {records: fileRecords, errors: fileErrors} =
+        parseBatchUploadCSV(fileContent, file.name);
+
+        records.push(...fileRecords);
+        errors.push(...fileErrors);
+
+        console.log(
+          `Processed file: ${file.name}, Records: ${fileRecords.length}, ` +
+          `Errors: ${fileErrors.length}`,
+        );
+      } catch (error) {
+        const errorMessage = error instanceof Error ?
+          error.message : "Unknown error";
+        console.error(`Error processing file ${file.name}:`, errorMessage);
+        errors.push(`Error processing file ${file.name}: ${errorMessage}`);
+      }
+    }
+
+    if (errors.length > 0) {
+      console.error(
+        `Found ${errors.length} errors during file processing:`,
+        errors,
+      );
+    } else {
+      console.log("All files processed successfully with no errors.");
+    }
+
+    if (records.length === 0 && errors.length > 0) {
+      console.error("No valid records found, but errors were encountered.");
+    }
+
+    return {records, errors};
+  } catch (error) {
+    const errorMessage = error instanceof Error ?
+      error.message : "Unknown error";
+    console.error(`Error accessing folder ${folderName}:`, errorMessage);
+    errors.push(`Error accessing folder ${folderName}: ${errorMessage}`);
+    return {records, errors};
   }
-
-  if (errors.length > 0) {
-    console.error("Errors found during file processing:", errors);
-  } else {
-    console.log("All files processed successfully with no errors.");
-  }
-
-  return {records, errors};
 };
 
 /**
@@ -115,8 +158,9 @@ Promise<string[]> => {
     const fileContent = fileBuffer[0].toString("utf-8");
     const parsedEmails = parseUpakneeCSV(fileContent);
     emails.push(...parsedEmails);
-    console.log(`Extracted ${parsedEmails.length} 
-      emails from file: ${file.name}`);
+    console.log(
+      `Extracted ${parsedEmails.length} emails from file: ${file.name}`,
+    );
   }
 
   console.log(`Total emails extracted: ${emails.length}`);

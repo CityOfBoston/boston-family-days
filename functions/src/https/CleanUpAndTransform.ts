@@ -1,6 +1,6 @@
 import {createHttpTrigger} from "../lib/functionsClient";
 import {registrationDataRef,
-  demographicDataRef,
+  // demographicDataRef,
 } from "../lib/firestoreClient";
 
 /* This function is used for temporary batch clean ups
@@ -15,43 +15,28 @@ export const cleanUpAndTransform = createHttpTrigger(
 
     try {
       const registrationData = await registrationDataRef.get();
-      const demographicData = await demographicDataRef.get();
+      // const demographicData = await demographicDataRef.get();
 
-      // TODO: Go through demographicData and check if the createdAt field
-      // is present. If not, lookup the passId in registrationData and use
-      // the createdAt field from registrationData. Update the demographicData
-      // with the new createdAt field. If the lookup fails, log the entry with
-      // a message then remove the entry from demographicData.
+      // TODO: Go through registrationData and check if the status is not active
+      // If not active, change to active. Don't update any other fields.
+      // If active, do nothing.
+      // Log the number of updates made.
 
-      const registrationDataMap = new Map();
+      const batch = registrationDataRef.firestore.batch();
+      let updateCount = 0;
+
       registrationData.forEach((doc) => {
-        registrationDataMap.set(doc.id, doc.data().createdAt);
-      });
-
-      const batch = demographicDataRef.firestore.batch();
-      let removalCount = 0;
-
-      demographicData.forEach((doc) => {
         const data = doc.data();
-        if (!data.createdAt) {
-          const createdAt = registrationDataMap.get(data.passId);
-          if (createdAt) {
-            // Update the document with the createdAt field
-            batch.update(doc.ref, {createdAt});
-          } else {
-            // Log and remove the document if createdAt cannot be found
-            console.log(`Removing document: ${doc} due to missing createdAt`);
-            batch.delete(doc.ref);
-            removalCount++;
-          }
+        if (data.status !== "active") {
+          batch.update(doc.ref, {status: "active"});
+          updateCount++;
         }
       });
 
       await batch.commit();
-      console.log(`CleanUpAndTransform function completed 
-        successfully. Estimated removals: ${removalCount}`);
+
       res.status(200).send(`Data cleaned and transformed 
-        successfully. Estimated removals: ${removalCount}`);
+        successfully. Estimated updates: ${updateCount}`);
     } catch (error) {
       console.error("Error in CleanUpAndTransform function:", error);
       res.status(500).send("An error occurred during the update process.");

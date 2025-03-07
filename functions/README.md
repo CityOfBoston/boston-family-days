@@ -32,13 +32,13 @@ for the internal facing format requirements for the uploaded files.
 
 The below fields are required:
 - School
-- StudentNo
 - FirstName
 - LastName
 - ContactName
 - ContactEmail
 
 And the following fields are optional:
+- StudentNo
 - ContactPhone
 - DateOfBirth
 - Grade

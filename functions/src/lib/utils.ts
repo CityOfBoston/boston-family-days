@@ -19,7 +19,12 @@ export const generateFiveDigitId = (): string => {
  * @param {string} str The string to sanitize.
  * @return {string} The sanitized string.
  */
-export const sanitizeString = (str: string) => {
+export const sanitizeString = (str: string | null | undefined) => {
+  // Handle null or undefined values
+  if (str === null || str === undefined) {
+    return "";
+  }
+
   return str
     .trim()
     .replace(/[^\w\s-]/g, " ") // Replace special characters with spaces
@@ -36,7 +41,12 @@ export const sanitizeString = (str: string) => {
  * @param {string} str The string to sanitize.
  * @return {string} The sanitized string.
  */
-export const sanitizeSchoolName = (str: string) => {
+export const sanitizeSchoolName = (str: string | null | undefined) => {
+  // Handle null or undefined values
+  if (str === null || str === undefined) {
+    return "";
+  }
+
   return str
     .trim()
     .toLowerCase()

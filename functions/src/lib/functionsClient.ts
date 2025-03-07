@@ -101,19 +101,25 @@ const validateApiKey = async (request: Request, res: Response) => {
  * the profile ID from Upaknee.
  * @param {StudentRegistrationData} studentRegistrationData
  * - The student registration data.
+ * @param {boolean} suppressConfirmation
+ * - Whether to suppress confirmation.
  * @return {Promise<{studentIndex: number,
  * status: string, passId: string}>}
  * An object containing the studentIndex, status, and passId.
  */
 export const addStudentAndUpdateSubscriber = async (
-  studentRegistrationData: StudentRegistrationData
+  studentRegistrationData: StudentRegistrationData,
+  suppressConfirmation = false
 ): Promise<{studentIndex: number,
   status: string, passId: string}> => {
   console.log("Adding student and updating subscriber",
     studentRegistrationData);
   // Step 1: Add student to Firebase
   const {studentIndex, status, passId} =
-  await addStudentToFirebase(studentRegistrationData);
+  await addStudentToFirebase(
+    studentRegistrationData,
+    suppressConfirmation
+  );
 
   // Step 2: Check status and add to Upaknee if applicable
   if (status !== "duplicate" && status !== "n/a") {
@@ -128,8 +134,9 @@ export const addStudentAndUpdateSubscriber = async (
       const profileId = await addSingleSubscriber(
         subscriber,
         studentRegistrationData.email,
-        studentIndex
-      ); // Explicit Confirmation
+        studentIndex,
+        suppressConfirmation
+      );
 
       console.log("Added subscriber to Upaknee", subscriber);
 
@@ -156,16 +163,22 @@ export const addStudentAndUpdateSubscriber = async (
  * Adds a list of students to Firebase and syncs them with Upaknee.
  * @param {StudentRegistrationData[]} studentRegistrationDataList
  * - A list of student registration data.
+ * @param {boolean} suppressConfirmation
+ * - Whether to suppress confirmation.
  * @return {Promise<void>}
  * A promise that resolves when the operation is complete.
  */
 export const addStudentsAndSyncSubscribers = async (
-  studentRegistrationDataList: StudentRegistrationData[]
+  studentRegistrationDataList: StudentRegistrationData[],
+  suppressConfirmation = true
 ): Promise<void> => {
   console.log("Adding students to Firebase");
   // Add students to Firestore
   for (const studentRegistrationData of studentRegistrationDataList) {
-    await addStudentAndUpdateSubscriber(studentRegistrationData);
+    await addStudentAndUpdateSubscriber(
+      studentRegistrationData,
+      suppressConfirmation
+    );
   }
   // Sync subscribers with Upaknee
   // await syncSubscribers();

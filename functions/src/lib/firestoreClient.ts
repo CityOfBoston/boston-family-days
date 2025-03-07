@@ -136,11 +136,14 @@ const calculateStudentIndexAndStatus = async (
  * status and passId.
  * @param {StudentRegistrationData} studentRegistrationData
  * - The student registration data.
+ * @param {boolean} suppressConfirmation
+ * - Whether to suppress confirmation.
  * @return {Promise<{studentIndex: number, status: string, passId: string}>}
  * An object containing the studentIndex, status, and passId.
  */
 export const addStudentToFirebase = async (
   studentRegistrationData: StudentRegistrationData,
+  suppressConfirmation = false
 ): Promise<{studentIndex: number, status: string, passId: string}> => {
   console.log("Adding student to Firebase", studentRegistrationData);
   const duplicateStudentId = await
@@ -163,7 +166,7 @@ export const addStudentToFirebase = async (
     school: studentRegistrationData.school,
     firstName: studentRegistrationData.firstName,
     lastName: studentRegistrationData.lastName,
-    status: status,
+    status: suppressConfirmation ? "active" : status,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     ...studentRegistrationData.middleName &&
     {middleName: studentRegistrationData.middleName},
