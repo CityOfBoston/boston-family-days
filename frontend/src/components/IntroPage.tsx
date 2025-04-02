@@ -12,7 +12,14 @@ const institutions = [
   { name: "Boston Children’s Museum", url: "https://www.bostonchildrensmuseum.org/" },
   { name: "Franklin Park Zoo", url: "https://www.zoonewengland.org/franklin-park-zoo" },
   { name: "Institute of Contemporary Art", url: "https://www.icaboston.org/" },
-  { name: "New England Aquarium", url: "https://www.neaq.org/visit/"}
+  { name: "New England Aquarium", url: "https://www.neaq.org/visit/"},
+  { name: "Paul Revere House", url: "https://www.paulreverehouse.org/"},
+  { name: "Old North Illuminated", url: "https://www.oldnorth.com/"},
+  { name: "USS Constitution Museum", url: "https://ussconstitutionmuseum.org/"},
+  {
+    name: `Revolutionary Spaces: Old State House and Old South Meeting House - Downtown (which will be joining the program later this spring.)`,
+    url: "https://www.oldstatehouse.org/"
+  }
 ];
 
 const IntroPage: React.FC = () => {

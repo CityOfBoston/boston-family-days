@@ -1,6 +1,7 @@
 import {createHttpTrigger} from "../lib/functionsClient";
-import {registrationDataRef,
-  // demographicDataRef,
+import {
+  // registrationDataRef,
+  demographicDataRef,
 } from "../lib/firestoreClient";
 
 /* This function is used for temporary batch clean ups
@@ -14,29 +15,24 @@ export const cleanUpAndTransform = createHttpTrigger(
     console.log("CleanUpAndTransform function started.");
 
     try {
-      const registrationData = await registrationDataRef.get();
-      // const demographicData = await demographicDataRef.get();
+      // const registrationData = await registrationDataRef.get();
+      const demographicData = await demographicDataRef.get();
 
-      // TODO: Go through registrationData and check if the status is not active
-      // If not active, change to active. Don't update any other fields.
-      // If active, do nothing.
-      // Log the number of updates made.
+      // TODO: Go through demographicData and check if the ethnicity field
+      // is an array. If not, keep a count of how many documents have an
+      // ethnicity field that is not an array.
 
-      const batch = registrationDataRef.firestore.batch();
       let updateCount = 0;
 
-      registrationData.forEach((doc) => {
+      demographicData.forEach((doc) => {
         const data = doc.data();
-        if (data.status !== "active") {
-          batch.update(doc.ref, {status: "active"});
+        if (data.ethnicity && !Array.isArray(data.ethnicity)) {
           updateCount++;
         }
       });
 
-      await batch.commit();
-
-      res.status(200).send(`Data cleaned and transformed 
-        successfully. Estimated updates: ${updateCount}`);
+      res.status(200).send(`Data cleaned and transformed successfully. 
+        Updated ${updateCount} documents.`);
     } catch (error) {
       console.error("Error in CleanUpAndTransform function:", error);
       res.status(500).send("An error occurred during the update process.");

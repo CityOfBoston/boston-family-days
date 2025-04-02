@@ -70,9 +70,7 @@ export const saveFormData = onCall(async (request) => {
         String(data?.languageData?.englishLearner || "")
       ),
       race: data?.demographicData?.race || [],
-      ethnicity: sanitizeString(
-        String(data?.demographicData?.ethnicity || "")
-      ),
+      ethnicity: data?.demographicData?.ethnicity || [],
       programs: data?.otherData?.programs || [],
       iep: sanitizeString(
         String(data?.otherData?.iep || "")

@@ -22,9 +22,9 @@
  * - The language spoken at home of the student.
  * @property {string} englishLearner
  * - Whether the student is an English learner.
- * @property {string} race - The race of the student.
- * @property {string} ethnicity - The ethnicity of the student.
- * @property {string} programs - The programs of the student.
+ * @property {string[]} race - The race of the student.
+ * @property {string[]} ethnicity - The ethnicity of the student.
+ * @property {string[]} programs - The programs of the student.
  * @property {string} iep - Whether the student is on an IEP.
 */
 export interface StudentRegistrationData {
@@ -46,9 +46,9 @@ export interface StudentRegistrationData {
     grade?: string,
     languageSpokenAtHome?: string,
     englishLearner?: string,
-    race?: string,
-    ethnicity?: string,
-    programs?: string,
+    race?: string[],
+    ethnicity?: string[],
+    programs?: string[],
     iep?: string,
 }
 

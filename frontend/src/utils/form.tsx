@@ -390,12 +390,12 @@ export const ETHNICTY_OPTIONS: Record<string, string> = {
   "brazillian": "Brazillian",
   "mexican": "Mexican",
   "cuban": "Cuban",
-  "cape verdean": "Cape Verdean",
+  "cape-verdean": "Cape Verdean",
   "chinese": "Chinese",
   "haitian": "Haitian",
   "indian-not-american-indian-or-alaska-native": "Indian (Not American Indian or Alaska Native)",
   "jamaican": "Jamaican",
-  "middle-eastern-or-north-afican": "Middle Eastern or North African",
+  "middle-eastern-or-north-african": "Middle Eastern or North African",
   "vietnamese": "Vietnamese"
 }
 
