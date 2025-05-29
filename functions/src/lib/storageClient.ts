@@ -88,7 +88,8 @@ Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
       return {records, errors};
     }
 
-    console.log(`Found ${csvFiles.length} CSV files in folder: ${folderName}`);
+    console.log(`Found ${csvFiles.length} CSV files in folder: 
+      ${folderName}`);
 
     for (const file of csvFiles) {
       console.log(`Processing file: ${file.name}`);
@@ -99,17 +100,37 @@ Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
         const {records: fileRecords, errors: fileErrors} =
         parseBatchUploadCSV(fileContent, file.name);
 
-        records.push(...fileRecords);
+        if (fileErrors.length > 0) {
+          console.warn(
+            `Found ${fileErrors.length} errors in file ${file.name}:`,
+            fileErrors,
+          );
+        }
+
+        if (fileRecords.length > 0) {
+          console.log(
+            `Successfully processed ${fileRecords.length} records from 
+            ${file.name}`,
+          );
+          records.push(...fileRecords);
+        } else {
+          console.warn(`No valid records found in file ${file.name}`);
+        }
+
         errors.push(...fileErrors);
 
         console.log(
-          `Processed file: ${file.name}, Records: ${fileRecords.length}, ` +
+          `Completed processing file: ${file.name}, Records: 
+          ${fileRecords.length}, ` +
           `Errors: ${fileErrors.length}`,
         );
       } catch (error) {
         const errorMessage = error instanceof Error ?
           error.message : "Unknown error";
         console.error(`Error processing file ${file.name}:`, errorMessage);
+        if (error instanceof Error && error.stack) {
+          console.error("Stack trace:", error.stack);
+        }
         errors.push(`Error processing file ${file.name}: ${errorMessage}`);
       }
     }
@@ -125,6 +146,9 @@ Promise<{ records: StudentRegistrationData[], errors: string[] }> => {
 
     if (records.length === 0 && errors.length > 0) {
       console.error("No valid records found, but errors were encountered.");
+    } else if (records.length > 0) {
+      console.log(`Successfully processed ${records.length} total records 
+        across all files.`);
     }
 
     return {records, errors};

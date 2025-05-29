@@ -2,6 +2,27 @@ import {parse} from "csv-parse/sync";
 import {StudentRegistrationData} from "./types";
 import {sanitizeString} from "./utils";
 /**
+ * Detects if a name is in the format "LastName, FirstName"
+ * and converts it to "FirstName LastName"
+ * @param {string} name - The name to check and potentially convert
+ * @return {string} The converted name if it was in reversed format,
+ * or the original name if not
+ */
+const fixReversedName = (name: string): string => {
+  if (!name) return "";
+
+  // Check if the name contains a comma
+  if (name.includes(",")) {
+    const parts = name.split(",").map((part) => part.trim());
+    if (parts.length === 2) {
+      // If we have exactly two parts after splitting by comma, reverse them
+      return `${parts[1]} ${parts[0]}`;
+    }
+  }
+  return name;
+};
+
+/**
  * Parses a CSV file specifically used for batch uploads
  * and returns a list of StudentRegistrationData objects.
  * @param {string} fileContent
@@ -95,12 +116,18 @@ export const parseBatchUploadCSV = (fileContent: string, fileName: string):
         let parentLastName = "";
 
         if (record["ContactName"]) {
-          const nameParts = record["ContactName"].split(" ");
+          // First check and fix if the name is in reversed format
+          // Do this before any sanitization to preserve the comma
+          const fixedContactName = fixReversedName(record["ContactName"]);
+          const nameParts = fixedContactName.split(" ");
           if (nameParts.length > 1) {
+            // For names with multiple parts, last part is last name
+            // and everything else is first name
             parentLastName = nameParts.pop() || "";
             parentFirstName = nameParts.join(" ");
           } else {
-            parentLastName = record["ContactName"];
+            // For single part names, treat as last name
+            parentLastName = fixedContactName;
           }
         }
 
@@ -109,6 +136,7 @@ export const parseBatchUploadCSV = (fileContent: string, fileName: string):
           studentId: sanitizeString(record["StudentNo"] || ""),
           firstName: sanitizeString(record["FirstName"]),
           lastName: sanitizeString(record["LastName"]),
+          // Apply sanitization after name splitting
           parentFirstName: sanitizeString(parentFirstName),
           parentLastName: sanitizeString(parentLastName),
           email: record["ContactEmail"],

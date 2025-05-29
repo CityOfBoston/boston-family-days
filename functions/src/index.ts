@@ -13,6 +13,8 @@ import {batchUpload} from "./https/BatchUpload";
 import {getRegistrationData} from "./https/GetRegistrationData";
 import {getDemographicData} from "./https/GetDemographicData";
 import {syncUpaknee} from "./https/SyncUpaknee";
+import {getWalletPass} from "./https/GetWalletPass";
+import {activatePending} from "./https/activatePending";
 
 export {
   saveFormData,
@@ -23,4 +25,6 @@ export {
   getRegistrationData,
   getDemographicData,
   syncUpaknee,
+  getWalletPass,
+  activatePending,
 };

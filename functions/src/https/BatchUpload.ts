@@ -53,7 +53,15 @@ export const batchUpload = createHttpTrigger(
         `Parsed ${studentRecords.length} student records from CSV files.`,
       );
 
-      await addStudentsAndSyncSubscribers(studentRecords);
+      try {
+        console.log("Starting to add students and sync subscribers...");
+        await addStudentsAndSyncSubscribers(studentRecords);
+        console.log("Successfully added students and synced subscribers.");
+      } catch (error) {
+        console.error("Error during student addition and subscriber sync:",
+          error);
+        throw error; // Re-throw to be caught by outer catch block
+      }
 
       console.log("Batch upload completed successfully.");
       res.status(200).send({
@@ -80,6 +88,13 @@ export const batchUpload = createHttpTrigger(
         errorMessage = error.message;
         errorDetails = error.stack || "No stack trace available";
       }
+
+      // Log the full error details for debugging
+      console.error("Full error details:", {
+        message: errorMessage,
+        details: errorDetails,
+        originalError: error,
+      });
 
       res.status(500).send({
         error: errorMessage,

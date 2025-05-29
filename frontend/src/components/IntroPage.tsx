@@ -17,8 +17,8 @@ const institutions = [
   { name: "Old North Illuminated", url: "https://www.oldnorth.com/"},
   { name: "USS Constitution Museum", url: "https://ussconstitutionmuseum.org/"},
   {
-    name: `Revolutionary Spaces: Old State House and Old South Meeting House - Downtown (which will be joining the program later this spring.)`,
-    url: "https://www.oldstatehouse.org/"
+    name: `Revolutionary Spaces: Old State House and Old South Meeting House - Downtown`,
+    url: "https://revolutionaryspaces.org/"
   }
 ];
 

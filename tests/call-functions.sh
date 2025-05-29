@@ -44,6 +44,7 @@ FUNCTIONS=(
   "getRegistrationData"
   "syncUpaknee"
   "subscriptionStatusHandler"
+  "activatePending"
 )
 
 # Function descriptions
@@ -54,6 +55,7 @@ FUNCTION_DESCRIPTIONS["getDemographicData"]="Exports all demographic data in a J
 FUNCTION_DESCRIPTIONS["getRegistrationData"]="Gets registration data for students"
 FUNCTION_DESCRIPTIONS["syncUpaknee"]="Syncs student data with the Upaknee email service"
 FUNCTION_DESCRIPTIONS["subscriptionStatusHandler"]="Webhook for Upaknee to update subscription status"
+FUNCTION_DESCRIPTIONS["activatePending"]="Activates all pending subscribers in the registration data"
 
 # Function to display the menu and get user selection
 function display_menu {
@@ -194,7 +196,7 @@ while true; do
   
   # Determine HTTP method based on function and data
   METHOD="GET"
-  if [ "$FUNCTION" == "batchUpload" ] || [ "$FUNCTION" == "syncUpaknee" ] || [ -n "$DATA" ]; then
+  if [ "$FUNCTION" == "batchUpload" ] || [ "$FUNCTION" == "syncUpaknee" ] || [ "$FUNCTION" == "activatePending" ] || [ -n "$DATA" ]; then
     METHOD="POST"
   fi
   

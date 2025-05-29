@@ -1,0 +1,22 @@
+{
+    "formatVersion": 1,
+    "passTypeIdentifier": "pass.boston-family-days",
+    "teamIdentifier": "GSXKSW4688",
+    "organizationName": "Boston City Hall",
+    "description": "Event Pass",
+    "backgroundColor": "rgb(60, 65, 76)",
+    "foregroundColor": "rgb(255, 255, 255)",
+    "labelColor": "rgb(255, 255, 255)",
+    "generic": {
+        "headerFields": [],
+        "primaryFields": [],
+        "secondaryFields": []
+    },
+    "barcodes": [],
+    "images": {
+        "icon": "icon.png",
+        "icon2x": "icon@2x.png",
+        "logo": "logo.png",
+        "strip": "strip.png"
+    }
+} 

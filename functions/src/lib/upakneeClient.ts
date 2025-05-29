@@ -141,3 +141,27 @@ export const updateSubscriberGroup = async (
   console.log(`Profile ID for subscriber group: ${profileId}`);
   return profileId;
 };
+
+/**
+ * Activates a subscriber in the Upaknee email newsletter email service
+ * given a profile ID.
+ * @param {string} profileId - The profile ID of the subscriber to activate.
+ * @return {Promise<void>} A promise that resolves when the subscriber
+ * is activated.
+ * @throws Will throw an error if the subscriber cannot be activated.
+ */
+export const activateSubscriber = async (profileId: string): Promise<void> => {
+  // The request body is empty, but the request must be made with a GET request
+  const response = await axios.get(
+    `${SUBSCRIBERS_ENDPOINT}/${profileId}/activate`, {
+      headers: {"Content-Type": "application/xml", "Accept": "application/xml"},
+      auth: {username: API_TOKEN, password: API_PASSWORD},
+    });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to activate subscriber.");
+  }
+
+  console.log(`Subscriber activated: ${profileId}`);
+};
+
