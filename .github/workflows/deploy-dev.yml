@@ -50,7 +50,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: npm ci
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Create environment file
         working-directory: ./frontend
@@ -61,13 +63,14 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       - name: Deploy to Firebase Hosting (Development)
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting --force --project ${{ secrets.FIREBASE_PROJECT_ID_DEV }}
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_DEV }}
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}' > $HOME/gcp-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+          firebase deploy --only hosting --force --project ${{ secrets.FIREBASE_PROJECT_ID_DEV }}
 
   deploy-functions-dev:
     name: Deploy Functions to Development
@@ -99,11 +102,12 @@ jobs:
         working-directory: ./functions
         run: npm run build
 
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       - name: Deploy to Firebase Functions (Development)
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only functions --force --project ${{ secrets.FIREBASE_PROJECT_ID_DEV }}
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_DEV }}
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}' > $HOME/gcp-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+          firebase deploy --only functions --force --project ${{ secrets.FIREBASE_PROJECT_ID_DEV }}
 
