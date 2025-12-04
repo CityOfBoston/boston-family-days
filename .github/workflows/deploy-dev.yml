@@ -9,10 +9,12 @@ on:
       - main
     types:
       - closed
+  workflow_dispatch:
 
 jobs:
   detect-changes:
     name: Detect Changes
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
@@ -34,7 +36,9 @@ jobs:
   deploy-frontend-dev:
     name: Deploy Frontend to Development
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
+    if: |
+      always() && 
+      (needs.detect-changes.result == 'skipped' || needs.detect-changes.outputs.frontend == 'true')
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -75,7 +79,9 @@ jobs:
   deploy-functions-dev:
     name: Deploy Functions to Development
     needs: detect-changes
-    if: needs.detect-changes.outputs.functions == 'true'
+    if: |
+      always() && 
+      (needs.detect-changes.result == 'skipped' || needs.detect-changes.outputs.functions == 'true')
     runs-on: ubuntu-latest
     environment: development
     steps:

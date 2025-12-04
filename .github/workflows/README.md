@@ -26,18 +26,22 @@ See detailed setup instructions below.
 
 ### 1. Deploy to Development (`deploy-dev.yml`)
 
-Automatically deploys to the development Firebase environment when changes are pushed to the `main` branch or when a pull request is merged.
+Automatically deploys to the development Firebase environment when changes are pushed to the `main` branch or when a pull request is merged. Also supports manual triggering.
 
 **Triggers:**
-- Push to `main` branch
-- Pull request closed (merged) to `main` branch
+- Push to `main` branch (automatic, change detection enabled)
+- Pull request closed (merged) to `main` branch (automatic, change detection enabled)
+- Manual trigger via GitHub Actions UI (skips change detection)
 
-**Behavior:**
+**Automatic Deployment Behavior:**
 - Detects which parts of the codebase changed (frontend, functions, or both)
 - Only deploys the components that have changed
 - Runs frontend and functions deployments in parallel when both changed
 - Skips deployment if no relevant changes detected
-- Uses GitHub environment protection rules for `development` environment
+
+**Manual Deployment Behavior:**
+- Manual triggers **bypass change detection** and always deploy **both** frontend and functions
+- Useful for force redeployment or configuration changes without code changes
 
 **Deployment Steps:**
 - **Frontend**: Install dependencies → Create `.env` → Build → Deploy to Firebase Hosting (development project)
@@ -175,18 +179,27 @@ Copy the entire contents of your `.env` file (all lines) and paste it as the sec
 
 ## Testing the Workflows
 
-### Test Automatic Deployment
+### Test Automatic Deployment to Development
 
 1. Make a change to the frontend or functions code
 2. Commit and push to the `main` branch
 3. Go to **Actions** tab in GitHub
 4. Watch the "Deploy to Development Environment" workflow run
-5. Verify deployment was successful
+5. Verify only the changed components were deployed
+
+### Test Manual Development Deployment
+
+1. Go to **Actions** tab in GitHub
+2. Select "Deploy to Development Environment" workflow
+3. Click **Run workflow**
+4. Click **Run workflow** (deploys both frontend and functions)
+5. Monitor the deployment
+6. Verify both frontend and functions are deployed (bypasses change detection)
 
 ### Test Manual Production Deployment
 
 1. Go to **Actions** tab in GitHub
-2. Select "Deploy to Production" workflow
+2. Select "Deploy to Production Environment" workflow
 3. Click **Run workflow**
 4. Select what to deploy (frontend, functions, or both)
 5. Click **Run workflow**
