@@ -57,20 +57,37 @@ const secretManagerClient = new SecretManagerServiceClient();
  * @param {Response} res - The response object.
  */
 const validateIpAddress = async (request: Request, res: Response) => {
-  const clientIp = request.headers["x-forwarded-for"] ||
-        request.connection.remoteAddress || "";
+  const forwardedFor = request.headers["x-forwarded-for"];
+  const clientIp = forwardedFor ?
+    (typeof forwardedFor === "string" ?
+      forwardedFor.split(",")[0].trim() : forwardedFor[0]) :
+    request.connection.remoteAddress || "";
+  console.log(`IP Validation - Request from IP: ${clientIp}`);
+
   const [version] = await secretManagerClient.accessSecretVersion({
     name: `projects/${process.env.GCP_PROJECT_ID}` +
     "/secrets/IP_WHITELIST/versions/latest",
   });
   const allowedIPs = version.payload?.data?.toString().
-    split(",").map((ip: string) => ip.trim());
-  if (!allowedIPs?.some((allowedIp: string) =>
-    (clientIp as string).startsWith(allowedIp.split("/")[0]))) {
+    split(",").map((ip: string) => ip.trim()) || [];
+
+  console.log(
+    `IP Validation - Checking against ${allowedIPs.length} whitelisted IPs`);
+
+  const matchingIp = allowedIPs.find((allowedIp: string) =>
+    (clientIp as string).startsWith(allowedIp.split("/")[0]));
+
+  if (!matchingIp) {
+    console.warn(`IP Validation - Access denied for IP: ${clientIp}`);
     res.status(403).json(
       {error: "Access denied: IP not allowed"});
     return;
   }
+
+  console.log(
+    `IP Validation - Access granted for IP:${clientIp} ` +
+    `(matched ${matchingIp})`,
+  );
 };
 
 /**

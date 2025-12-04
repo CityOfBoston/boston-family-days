@@ -15,6 +15,9 @@ import {getDemographicData} from "./https/GetDemographicData";
 import {syncUpaknee} from "./https/SyncUpaknee";
 import {getWalletPass} from "./https/GetWalletPass";
 import {activatePending} from "./https/activatePending";
+import {updateStudentRecordEndpoint} from "./https/UpdateStudentRecord";
+import {syncStudentToUpaknee} from "./https/SyncStudentToUpaknee";
+import {deleteStudentRecord} from "./https/DeleteStudentRecord";
 
 export {
   saveFormData,
@@ -27,4 +30,7 @@ export {
   syncUpaknee,
   getWalletPass,
   activatePending,
+  updateStudentRecordEndpoint,
+  syncStudentToUpaknee,
+  deleteStudentRecord,
 };

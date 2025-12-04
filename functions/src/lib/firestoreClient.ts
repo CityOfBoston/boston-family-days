@@ -67,7 +67,7 @@ export const generateUniquePassId = async (): Promise<string> => {
  * @return {Promise<admin.firestore.QuerySnapshot>}
  * A snapshot of all documents with the same email.
  */
-const getDocumentsByEmail = async (email: string):
+export const getDocumentsByEmail = async (email: string):
 Promise<admin.firestore.QuerySnapshot> => {
   return await registrationDataRef
     .where("email", "==", email)
@@ -440,4 +440,277 @@ export const processFirestoreDocuments = (
       },
     };
   });
+};
+
+/**
+ * Gets the email address for a student given their passId.
+ * @param {string} passId - The pass ID of the student.
+ * @return {Promise<string>} The email address of the student.
+ * @throws Will throw an error if the student is not found.
+ */
+export const getStudentEmail = async (passId: string): Promise<string> => {
+  const querySnapshot = await registrationDataRef
+    .where("passId", "==", passId)
+    .limit(1)
+    .get();
+
+  if (querySnapshot.empty) {
+    throw new Error("No student found with the given passId.");
+  }
+
+  const email = querySnapshot.docs[0].data().email;
+  if (!email) {
+    throw new Error("Student found but email is missing.");
+  }
+
+  return email;
+};
+
+/**
+ * Syncs a specific email group to Upaknee.
+ * Groups documents by email, orders by createdAt, and syncs with Upaknee.
+ * @param {string} email - The email address to sync.
+ * @return {Promise<number>} The number of students synced.
+ * @throws Will throw an error if the sync fails.
+ */
+export const syncEmailGroup = async (email: string): Promise<number> => {
+  console.log(`Syncing email group: ${email}`);
+
+  const documents = await getDocumentsByEmail(email);
+
+  let subscribers: StudentSubscriberData[] = [];
+
+  if (!documents.empty) {
+    // Order documents by createdAt
+    const orderedDocs = documents.docs.sort((a, b) => {
+      return a.data().createdAt.toMillis() - b.data().createdAt.toMillis();
+    });
+
+    // Assemble Subscriber objects
+    subscribers = orderedDocs.map((doc) => {
+      const data = doc.data();
+      return {
+        passId: data.passId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        school: data.school,
+      };
+    });
+  }
+  // If empty, subscribers array will be empty,
+  // which will clear all slots in Upaknee
+
+  // Sync with Upaknee service
+  try {
+    await updateSubscriberGroup(subscribers, email);
+    console.log(
+      `Successfully synced ${subscribers.length} ` +
+      `subscribers for email ${email}`);
+    return subscribers.length;
+  } catch (error) {
+    console.error(`Failed to sync subscribers for email ${email}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Updates a student record in both registrationData
+ * and demographicData collections.
+ * @param {string} passId - The pass ID of the student to update.
+ * @param {Partial<StudentRegistrationData>} registrationUpdates -
+ * Partial registration data updates.
+ * @param {Partial<StudentRegistrationData>} demographicUpdates -
+ * Partial demographic data updates.
+ * @return {Promise<{registrationDocIds: string[],
+ * demographicDocIds: string[]}>}
+ * An object containing the IDs of updated documents.
+ * @throws Will throw an error if the student is not found.
+ */
+export const updateStudentRecord = async (
+  passId: string,
+  registrationUpdates: Partial<StudentRegistrationData>,
+  demographicUpdates: Partial<StudentRegistrationData>
+): Promise<{registrationDocIds: string[], demographicDocIds: string[]}> => {
+  console.log(`Updating student record with passId: ${passId}`);
+
+  // Get all registrationData documents with this passId
+  const registrationSnapshot = await registrationDataRef
+    .where("passId", "==", passId)
+    .get();
+
+  if (registrationSnapshot.empty) {
+    throw new Error("No student found with the given passId.");
+  }
+
+  // Separate registration fields from demographic fields
+  const registrationFields: Record<string, any> = {};
+  if (registrationUpdates.email !== undefined) {
+    registrationFields.email = registrationUpdates.email;
+  }
+  if (registrationUpdates.school !== undefined) {
+    registrationFields.school = registrationUpdates.school;
+  }
+  if (registrationUpdates.firstName !== undefined) {
+    registrationFields.firstName = registrationUpdates.firstName;
+  }
+  if (registrationUpdates.lastName !== undefined) {
+    registrationFields.lastName = registrationUpdates.lastName;
+  }
+  if (registrationUpdates.middleName !== undefined) {
+    registrationFields.middleName = registrationUpdates.middleName;
+  }
+  if (registrationUpdates.parentFirstName !== undefined) {
+    registrationFields.parentFirstName = registrationUpdates.parentFirstName;
+  }
+  if (registrationUpdates.parentLastName !== undefined) {
+    registrationFields.parentLastName = registrationUpdates.parentLastName;
+  }
+  if (registrationUpdates.preferredCommunicationLanguage !== undefined) {
+    registrationFields.preferredCommunicationLanguage =
+      registrationUpdates.preferredCommunicationLanguage;
+  }
+  if (registrationUpdates.phoneNumber !== undefined) {
+    registrationFields.phoneNumber = registrationUpdates.phoneNumber;
+  }
+
+  // Build demographic fields
+  const demographicFields: Record<string, any> = {};
+  if (demographicUpdates.street1 !== undefined) {
+    demographicFields.street1 = demographicUpdates.street1;
+  }
+  if (demographicUpdates.street2 !== undefined) {
+    demographicFields.street2 = demographicUpdates.street2;
+  }
+  if (demographicUpdates.neighborhood !== undefined) {
+    demographicFields.neighborhood = demographicUpdates.neighborhood;
+  }
+  if (demographicUpdates.zip !== undefined) {
+    demographicFields.zip = demographicUpdates.zip;
+  }
+  if (demographicUpdates.studentId !== undefined) {
+    demographicFields.studentId = demographicUpdates.studentId;
+  }
+  if (demographicUpdates.dob !== undefined) {
+    demographicFields.dob = demographicUpdates.dob;
+  }
+  if (demographicUpdates.grade !== undefined) {
+    demographicFields.grade = demographicUpdates.grade;
+  }
+  if (demographicUpdates.languageSpokenAtHome !== undefined) {
+    demographicFields.languageSpokenAtHome =
+      demographicUpdates.languageSpokenAtHome;
+  }
+  if (demographicUpdates.englishLearner !== undefined) {
+    demographicFields.englishLearner = demographicUpdates.englishLearner;
+  }
+  if (demographicUpdates.race !== undefined) {
+    demographicFields.race = demographicUpdates.race;
+  }
+  if (demographicUpdates.ethnicity !== undefined) {
+    demographicFields.ethnicity = demographicUpdates.ethnicity;
+  }
+  if (demographicUpdates.programs !== undefined) {
+    demographicFields.programs = demographicUpdates.programs;
+  }
+  if (demographicUpdates.iep !== undefined) {
+    demographicFields.iep = demographicUpdates.iep;
+  }
+
+  const registrationDocIds: string[] = [];
+  const demographicDocIds: string[] = [];
+
+  // Update all registrationData documents
+  if (Object.keys(registrationFields).length > 0) {
+    const batch = db.batch();
+    registrationSnapshot.forEach((doc) => {
+      batch.update(doc.ref, registrationFields);
+      registrationDocIds.push(doc.id);
+    });
+    await batch.commit();
+    console.log(`Updated ${registrationDocIds.length} registration documents`);
+  }
+
+  // Get and update all demographicData documents
+  const demographicSnapshot = await demographicDataRef
+    .where("passId", "==", passId)
+    .get();
+
+  if (Object.keys(demographicFields).length > 0) {
+    if (demographicSnapshot.empty) {
+      console.warn(`No demographic data found for passId: ${passId}`);
+    } else {
+      const batch = db.batch();
+      demographicSnapshot.forEach((doc) => {
+        batch.update(doc.ref, demographicFields);
+        demographicDocIds.push(doc.id);
+      });
+      await batch.commit();
+      console.log(`Updated ${demographicDocIds.length} demographic documents`);
+    }
+  }
+
+  return {registrationDocIds, demographicDocIds};
+};
+
+/**
+ * Deletes a student record from both registrationData
+ * and demographicData collections.
+ * @param {string} passId - The pass ID of the student to delete.
+ * @return {Promise<{email: string, registrationDocIds: string[],
+ * demographicDocIds: string[]}>}
+ * An object containing the email (before deletion) and IDs
+ * of deleted documents.
+ * @throws Will throw an error if the student is not found.
+ */
+export const deleteStudentByPassId = async (
+  passId: string
+): Promise<{email: string,
+  registrationDocIds: string[], demographicDocIds: string[]}> => {
+  console.log(`Deleting student record with passId: ${passId}`);
+
+  // Get email before deletion (needed for sync)
+  let email: string;
+  try {
+    email = await getStudentEmail(passId);
+  } catch (error) {
+    throw new Error("Cannot delete student: " +
+      "student not found or email missing.");
+  }
+
+  // Get all registrationData documents with this passId
+  const registrationSnapshot = await registrationDataRef
+    .where("passId", "==", passId)
+    .get();
+
+  // Get all demographicData documents with this passId
+  const demographicSnapshot = await demographicDataRef
+    .where("passId", "==", passId)
+    .get();
+
+  const registrationDocIds: string[] = [];
+  const demographicDocIds: string[] = [];
+
+  // Delete registrationData documents
+  if (!registrationSnapshot.empty) {
+    const batch = db.batch();
+    registrationSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+      registrationDocIds.push(doc.id);
+    });
+    await batch.commit();
+    console.log(`Deleted ${registrationDocIds.length} registration documents`);
+  }
+
+  // Delete demographicData documents
+  if (!demographicSnapshot.empty) {
+    const batch = db.batch();
+    demographicSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+      demographicDocIds.push(doc.id);
+    });
+    await batch.commit();
+    console.log(`Deleted ${demographicDocIds.length} demographic documents`);
+  }
+
+  return {email, registrationDocIds, demographicDocIds};
 };
