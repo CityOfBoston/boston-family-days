@@ -199,10 +199,10 @@ const IntroPage: React.FC = () => {
           </span>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <p className="!font-sans !text-[18px] !font-bold !leading-[26px] !text-[#14202e]">
-              Is your child enrolled in Boston Public Schools or Boston Pre-K?
+              Note for BPS Families
             </p>
             <p className="!font-sans !text-base !font-normal !leading-[26px] !text-[#14202e]">
-              They’re already signed up for Boston Family Days, so you don’t need to register. You’ll receive your pass directly through BPS. Please make sure your email address is up to date in the BPS system.
+              If your child is enrolled in Boston Public Schools or Boston Pre-K, they are automatically signed up for this program. You will continue to receive your Boston Family Days pass directly via BPS. Please ensure that your email address is updated in the BPS system so you can receive your pass and program updates.
             </p>
           </div>
         </div>
@@ -211,6 +211,9 @@ const IntroPage: React.FC = () => {
           <h2 className="!font-sans !text-[26px] !font-bold !normal-case !leading-[34px] !text-[#14202e]">
             What you get
           </h2>
+          <p className="!font-sans !text-[18px] !font-normal !leading-7 !text-[#3b424d]">
+            Once you complete enrollment, you’ll receive your Boston Family Days pass. You’ll also get bi-weekly emails about the program with special opportunities and reminders.
+          </p>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
             <div className="flex min-w-0 flex-1 items-start gap-3 rounded-lg border border-[#dce1e7] bg-white p-5">
               <span className="inline-flex shrink-0">
@@ -239,7 +242,7 @@ const IntroPage: React.FC = () => {
               </span>
               <p className="!font-sans !text-[17px] !font-normal !leading-6 !text-[#14202e]">
                 Valid{" "}
-                <strong className="font-bold">through December 2026</strong>
+                <strong className="font-bold">through December 2028</strong>
               </p>
             </div>
           </div>
@@ -254,14 +257,9 @@ const IntroPage: React.FC = () => {
         </section>
 
         <section id="where-you-can-go" className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <h2 className="!font-sans !text-[26px] !font-bold !normal-case !leading-[34px] !text-[#14202e]">
-              Where you can go
-            </h2>
-            <p className="!font-sans !text-base !font-normal !leading-6 !text-[#4a5563]">
-              Links open each institution’s official website in a new tab.
-            </p>
-          </div>
+          <h2 className="!font-sans !text-[26px] !font-bold !normal-case !leading-[34px] !text-[#14202e]">
+            Where you can go
+          </h2>
 
           <VenueAccordion
             title="Free admission on 1st & 2nd Sundays"
@@ -293,9 +291,6 @@ const IntroPage: React.FC = () => {
           <h2 className="!font-sans !text-[26px] !font-bold !normal-case !leading-[34px] !text-[#14202e]">
             Ready to register?
           </h2>
-          <p className="!font-sans !text-[18px] !font-normal !leading-7 !text-[#3b424d]">
-            Once you complete enrollment, you’ll receive your Boston Family Days pass. You’ll also get bi-weekly emails about the program with special opportunities and reminders.
-          </p>
           <button type="button" onClick={handleRegisterClick} className={`${registerButtonClass} w-full`}>
             Register now
           </button>
