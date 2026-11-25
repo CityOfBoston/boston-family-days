@@ -25,13 +25,10 @@ h1 {
   @apply text-3xl
 }
 
-/* Accordion headers stay quiet on click. Keyboard focus still draws an outline. */
+/* The button's native focus ring is the inner blue box. Hide it. */
 .venue-accordion-trigger {
   appearance: none;
   -webkit-appearance: none;
-  background-color: transparent;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
 
 .venue-accordion-trigger:focus,
@@ -40,7 +37,47 @@ h1 {
   box-shadow: none !important;
 }
 
-.venue-accordion-trigger.is-keyboard-focus {
-  outline: 2px solid #1871bd !important;
-  outline-offset: 4px !important;
+.venue-accordion-trigger::-moz-focus-inner {
+  border: 0;
+}
+
+.venue-accordion:focus-within {
+  outline: 4px solid #1871bd;
+  outline-offset: 3px;
+}
+
+.venue-link .venue-link-text {
+  color: #145B99 !important;
+  font-family: Lora, serif !important;
+  font-size: 18px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 26px !important;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+  transition: color 150ms ease;
+}
+
+.venue-link:hover .venue-link-text {
+  color: #6A3A9A !important;
+}
+
+.venue-link-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  vertical-align: -2px;
+  background-color: #145B99;
+  transition: background-color 150ms ease;
+  -webkit-mask: url("./assets/intro/icon-external-link.svg") center / 16px 16px no-repeat;
+  mask: url("./assets/intro/icon-external-link.svg") center / 16px 16px no-repeat;
+}
+
+.venue-link:hover .venue-link-icon {
+  background-color: #6A3A9A;
 }

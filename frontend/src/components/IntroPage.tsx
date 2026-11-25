@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import iconExternalLink from "../assets/intro/icon-external-link.svg";
 import iconInfo from "../assets/intro/icon-info.svg";
 import iconTicket from "../assets/intro/icon-ticket.svg";
 import iconCalendar from "../assets/intro/icon-calendar.svg";
@@ -100,18 +99,18 @@ function VenueLink({ name, url }: Venue) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="max-w-full self-start !font-sans !text-[18px] !font-normal !leading-[26px] !text-[#285a9b] no-underline"
+      className="venue-link max-w-full self-start"
     >
       {leading && (
-        <span className="underline decoration-solid [text-underline-position:from-font]">
+        <span className="venue-link-text">
           {leading}{" "}
         </span>
       )}
       <span className="whitespace-nowrap">
-        <span className="underline decoration-solid [text-underline-position:from-font]">
+        <span className="venue-link-text">
           {lastWord}
         </span>
-        <img src={iconExternalLink} alt="" className="ml-2 inline-block align-[-2px]" />
+        <span className="venue-link-icon" aria-hidden="true" />
       </span>
       <span className="sr-only"> (opens in a new tab)</span>
     </a>
@@ -144,31 +143,15 @@ type AccordionProps = {
 
 function VenueAccordion({ title, summary, panelId, children }: AccordionProps) {
   const [open, setOpen] = useState(true);
-  const [keyboardFocus, setKeyboardFocus] = useState(false);
-  const pointerFocus = useRef(false);
-
-  const markPointerFocus = () => {
-    pointerFocus.current = true;
-    setKeyboardFocus(false);
-  };
 
   return (
-    <div className="w-full rounded-[10px] border border-[#dce1e7] bg-white px-5 py-5 sm:px-7 sm:py-6">
+    <div className="venue-accordion w-full rounded-[10px] border border-[#dce1e7] bg-white px-5 py-5 sm:px-7 sm:py-6">
       <button
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        onPointerDown={markPointerFocus}
-        onMouseDown={markPointerFocus}
-        onFocus={() => {
-          if (!pointerFocus.current) setKeyboardFocus(true);
-        }}
-        onBlur={() => {
-          pointerFocus.current = false;
-          setKeyboardFocus(false);
-        }}
         onClick={() => setOpen((isOpen) => !isOpen)}
-        className={`venue-accordion-trigger flex w-full items-center gap-4 border-0 bg-transparent p-0 text-left${keyboardFocus ? " is-keyboard-focus" : ""}`}
+        className="venue-accordion-trigger flex w-full items-center gap-4 border-0 bg-transparent p-0 text-left"
       >
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="!font-sans !text-[21px] !font-bold !leading-[30px] !text-[#14202e]">
